@@ -1,3 +1,12 @@
+#
+#[create_map_pgm.py]
+#
+#Copyright (c) [2017] [Masaya Okawa]
+#
+#This software is released under the MIT License.
+#http://opensource.org/licenses/mit-license.php
+#
+
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
