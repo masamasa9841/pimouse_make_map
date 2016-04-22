@@ -63,14 +63,12 @@ class left_hand(object):
         while not after - now >= t and not rospy.is_shutdown():
             after = rospy.get_time()
             if left and right:
-                E = 0.3 * (self.left_side - self.right_side)
+                E = 0.2 * (self.left_side - self.right_side)
             elif left and not right:
-                E = 0.3 * (self.left_side - 920)
+                E = 0.35 * (self.left_side - 920)
             elif not left and right:
-                E = -0.3 * (self.right_side - 920)
+                E = -0.35 * (self.right_side - 920)
             else: pass
-            if after - now >= t * 2.5 / 3:
-                E = 0
             self.raw_control(p+E,p-E)
             rospy.Rate(100)
             left , right = self.sensor[0], self.sensor[3]
