@@ -40,11 +40,11 @@ class left_hand(object):
         self.right_side = msg.right_side
         if msg.right_forward > 700: self.sensor[2] = True
         else : self.sensor[2] = False
-        if msg.right_side > 500: self.sensor[3] = True
+        if msg.right_side > 550: self.sensor[3] = True
         else : self.sensor[3] = False
         if msg.left_forward > 700: self.sensor[1] = True
         else : self.sensor[1] = False
-        if msg.left_side > 500: self.sensor[0] = True
+        if msg.left_side > 550: self.sensor[0] = True
         else : self.sensor[0] = False
 
     def switch_callback(self, msg): 
@@ -64,17 +64,20 @@ class left_hand(object):
             after = rospy.get_time()
             if left and right:
                 E = 0.3 * (self.left_side - self.right_side)
-            if left and not right:
+            elif left and not right:
                 E = 0.3 * (self.left_side - 920)
             elif not left and right:
                 E = -0.3 * (self.right_side - 920)
             else: pass
-            if after - now >= t * 2.5 / 3: E = 0
+            if after - now >= t * 2.5 / 3:
+                E = 0
             self.raw_control(p+E,p-E)
             rospy.Rate(100)
             left , right = self.sensor[0], self.sensor[3]
 
     def turn(self,p, deg, rorl, rl=0):
+        self.raw_control(0,0)
+        rospy.sleep(0.15)
         t = (deg * 400 * 4.8) / (360 * 2.4 * p)
         if(0 > rorl):
             self.raw_control(p,-p)
@@ -82,6 +85,8 @@ class left_hand(object):
         else:
             self.raw_control(-p,p)
             rospy.sleep(t)
+        self.raw_control(0,0)
+        rospy.sleep(0.15)
 
     def raw_control(self, left_hz, right_hz):
         pub = rospy.Publisher('/motor_raw', MotorFreqs, queue_size = 10)
@@ -99,25 +104,13 @@ class left_hand(object):
             self.oneframe(left, right, 500, 18.1)
             front = self.sensor[1]
             if not left:
-                self.raw_control(0,0)
-                rospy.sleep(0.1)
                 self.turn(500, 90, 1)
-                self.raw_control(0,0)
-                rospy.sleep(0.1)
             elif left and not front:
                 pass
             elif left and right and front:
-                self.raw_control(0,0)
-                rospy.sleep(0.1)
                 self.turn(500, 180, 1)
-                self.raw_control(0,0)
-                rospy.sleep(0.1)
             elif left and front:
-                self.raw_control(0,0)
-                rospy.sleep(0.1)
                 self.turn(500, 90, -1)
-                self.raw_control(0,0)
-                rospy.sleep(0.1)
 
 if __name__ == '__main__':
     lh = left_hand()
