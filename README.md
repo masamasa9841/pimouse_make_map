@@ -23,7 +23,7 @@ catkine_make
 ```
 ### Usage
 ```
-rosrun pimouse_make_map 
+rosrun pimouse_make_map.py
 ```
 ### License
 
